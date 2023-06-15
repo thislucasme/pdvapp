@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.cadastroproduto.CadastroProdutoActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floatingActionButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/iconProduto"
+                    app:srcCompat="@drawable/baseline_photo_camera_24" />
+
+                <com.makeramen.roundedimageview.RoundedImageView
+
+                    android:id="@+id/iconProduto"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/dairyproducts"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:riv_border_color="@color/black"
+                    app:riv_border_width="0dp"
+                    app:riv_corner_radius="30dp"
+                    app:riv_mutate_background="true"
+                    app:riv_oval="true"
+                    app:riv_tile_mode="clamp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTextViewCategoria"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/background_input"
+                        android:inputType="none"
+                        android:text="Selecione uma categoria"
+                        android:textColorHint="@color/purple_700" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/imageButtoddn"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@drawable/ic_baseline_add_24_purple" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputEditTextCodigo"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_input"
+                android:hint="Código"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/imageView2"
+                app:layout_constraintStart_toStartOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextDescricao"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_input"
+                android:hint="Descrição"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+                app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+                app:layout_constraintTop_toBottomOf="@+id/textInputEditText" />
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextValorVenda"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_input"
+                android:hint="Valor de venda"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+                app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+                app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextValorCusto"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_input"
+                android:hint="Valor de custo"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+                app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+                app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+            <Button
+                android:id="@+id/button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:text="adcionar variações" />
+
+            <Button
+                android:id="@+id/button2"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:text="adcionar promoção" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText3dd"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_input"
+                android:hint="Estoque mínimo"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+                app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+                app:layout_constraintTop_toBottomOf="@+id/editText2" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTexddt3"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_input"
+                android:hint="Estoque atual"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+                app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+                app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextCodigoBarras"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_input"
+
+                    android:hint="Código de barras (opcional)"
+                    android:paddingLeft="10dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+                    app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+                    app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/imageButton"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@drawable/barcode" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextdsdsd3"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_input"
+                android:hint="Observação"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+                app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+                app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <CheckBox
+                    android:id="@+id/checkBox4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Não controlar estoque" />
+
+                <CheckBox
+                    android:id="@+id/checkBox3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Venda fracionada" />
+
+                <CheckBox
+                    android:id="@+id/checkBox2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Valor aberto" />
+
+                <Button
+                    android:id="@+id/button3"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:text="adcionar modificador" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/autoCompleteTextVciewCategoria"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/background_input"
+                            android:inputType="none"
+                            android:text="Selecione um fornecedor"
+                            android:textColorHint="@color/purple_700" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/imageButtoddnc"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_gravity="center_vertical"
+                            app:srcCompat="@drawable/ic_baseline_add_24_purple" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

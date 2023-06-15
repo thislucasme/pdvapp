@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".cadastro.CadastroClienteActivity">
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/textInputEditTextCodigo"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:background="@drawable/background_input"
+          android:hint="Nome"
+          android:paddingLeft="10dp"
+          app:layout_constraintEnd_toEndOf="@+id/imageView2"
+          app:layout_constraintStart_toStartOf="@+id/imageView2"
+          app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/editTextDescricao"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:background="@drawable/background_input"
+          android:hint="CPF ou CNPJ"
+          android:paddingLeft="10dp"
+          app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+          app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+          app:layout_constraintTop_toBottomOf="@+id/textInputEditText" />
+
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/editTextValorVenda"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:background="@drawable/background_input"
+          android:hint="Email"
+          android:paddingLeft="10dp"
+          app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+          app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+          app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/editTextValorCusto"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:background="@drawable/background_input"
+          android:hint="Telefone"
+          android:paddingLeft="10dp"
+          app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+          app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+          app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/editText3dd"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:background="@drawable/background_input"
+          android:hint="Celular"
+          android:paddingLeft="10dp"
+          app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+          app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+          app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/editTexddt3"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:background="@drawable/background_input"
+          android:hint="Aniversário"
+          android:paddingLeft="10dp"
+          app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+          app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+          app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextCodigoBarras"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_input"
+
+            android:hint="RG ou IE"
+            android:paddingLeft="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+            app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+            app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+      </LinearLayout>
+
+      <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/editTextdsdsd3"
+          android:layout_width="match_parent"
+          android:layout_height="55dp"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="16dp"
+          android:background="@drawable/background_input"
+          android:hint="Observação"
+          android:paddingLeft="10dp"
+          app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+          app:layout_constraintStart_toStartOf="@+id/textInputEditText"
+          app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          android:paddingLeft="16dp"
+          android:paddingRight="16dp">
+
+        <CheckBox
+            android:id="@+id/checkBox4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Isento ICMS" />
+
+        <CheckBox
+            android:id="@+id/checkBox3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Optante pelo Simples Nacional" />
+
+      </LinearLayout>
+
+
+    </LinearLayout>
+  </ScrollView>
+  </androidx.constraintlayout.widget.ConstraintLayout>
