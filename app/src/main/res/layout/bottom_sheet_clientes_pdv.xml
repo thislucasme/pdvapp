@@ -4,14 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <EditText
-        android:layout_margin="10dp"
-        android:paddingLeft="10dp"
-        android:drawableLeft="@drawable/ic_baseline_person_24"
-        android:background="@drawable/background_input"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:hint="Busque aqui..."
-        android:layout_height="55dp"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_input"
+            android:drawableLeft="@drawable/ic_baseline_person_24"
+            android:hint="Busque aqui..."
+            android:paddingLeft="10dp" />
+
+    </LinearLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -23,8 +35,11 @@
     <Button
         android:id="@+id/buttonAdicionarCliente"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:drawableLeft="@drawable/round_add_24"
         android:text="adicionar cliente" />
+
 </LinearLayout>

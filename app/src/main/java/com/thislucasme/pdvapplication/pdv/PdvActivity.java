@@ -3,7 +3,6 @@ package com.thislucasme.pdvapplication.pdv;
 import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +12,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,21 +36,21 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.thislucasme.pdvapplication.R;
-import com.thislucasme.pdvapplication.adapter.ClientesCartPdvAdapter;
 import com.thislucasme.pdvapplication.adapter.ProdutoAdapter;
 import com.thislucasme.pdvapplication.adapter.ProdutosCartPdvAdapter;
-import com.thislucasme.pdvapplication.cadastro.CadastroClienteActivity;
 import com.thislucasme.pdvapplication.cadastro.CadastroOperadorActivity;
 import com.thislucasme.pdvapplication.callbacks.DialogTecladoAcrescimoDescontoCallBack;
-import com.thislucasme.pdvapplication.helpers.DialogHelper;
-import com.thislucasme.pdvapplication.model.Cliente;
+import com.thislucasme.pdvapplication.helpers.DialogAcrescimoDecrescimo;
+import com.thislucasme.pdvapplication.helpers.DialogClientes;
 import com.thislucasme.pdvapplication.model.PaginationInfo;
 import com.thislucasme.pdvapplication.model.Pedido;
 import com.thislucasme.pdvapplication.model.Produto;
 import com.thislucasme.pdvapplication.model.Vendedor;
 import com.thislucasme.pdvapplication.recycler.RecyclerItemClickListener;
+import com.thislucasme.pdvapplication.teste.DatabaseHelper;
 import com.thislucasme.pdvapplication.ui.cadastroprodutos.ListagemProdutosActivity;
 import com.thislucasme.pdvapplication.ui.detalheProdutoPdv.DetalheProdutoPdvctivity;
+import com.thislucasme.pdvapplication.viewmodel.PedidoPdvViewModel;
 import com.thislucasme.pdvapplication.viewmodel.ProdutoViewModel;
 import com.thislucasme.pdvapplication.viewmodel.TesteViewModel;
 
@@ -82,7 +83,7 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
     private LinearLayout serverLinarError;
     private ImageView imageError;
     private TextView messageError;
-    private Pedido pedido;
+    private Pedido pedidoPdv;
 
 
     private TextView ultimoNomeProduto;
@@ -91,11 +92,12 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
     private Button cobrar;
     private LinearLayout valoresPedidoPdv;
     private List<Vendedor> vendedores = new ArrayList<>();
-    private List<Cliente> clientes = new ArrayList<>();
+
     private LinearLayout linearLayoutClientes;
     private LinearLayout linearLayoutCaixas;
 
     private TesteViewModel testeViewModel;
+    private PedidoPdvViewModel pedidoPdvViewModel;
 
 
 
@@ -124,12 +126,14 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         recyclerView.setLayoutManager(layoutManager);
 
         testeViewModel = new ViewModelProvider(this).get(TesteViewModel.class);
+        pedidoPdvViewModel = new ViewModelProvider(this).get(PedidoPdvViewModel.class);
+
 
 
         produtoAdapter = new ProdutoAdapter();
         produtoAdapter.setItems(produtos);
 
-        pedido = new Pedido();
+        pedidoPdv = new Pedido();
 
         //vendedores
         Vendedor vendedor = new Vendedor();
@@ -139,14 +143,6 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         vendedor.setNome("Eduardo");
         vendedores.add(vendedor);
 
-        //clientes
-        Cliente cliente = new Cliente();
-        cliente.setNome("Cristino");
-        clientes.add(cliente);
-
-        cliente = new Cliente();
-        cliente.setNome("Cristino");
-        clientes.add(cliente);
 
 
         getSupportActionBar().setTitle("Carregando...");
@@ -214,9 +210,9 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         valoresPedidoPdv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if(pedido != null){
-                   if(pedido.getProdutoList().size() > 0){
-                       showBottomSheetDialogProdutos(getApplicationContext());
+               if(pedidoPdv != null){
+                   if(pedidoPdv.getProdutoList().size() > 0){
+                       showBottomSheetDialogProdutos(PdvActivity.this);
                    }
                }
             }
@@ -290,25 +286,59 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
 
                         Produto produto = produtos.get(position);
                         produto.setEstoque(1);
-                        pedido.getProdutoList().add(produto);
+                        pedidoPdv.getProdutoList().add(produto);
                         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
                         //Formatando o valor para a moeda brasileira
                         String formattedValue = currencyFormat.format(produto.getPreco_venda());
                         ultimoNomeProduto.setText(produto.getDescricao());
                         ultimoValorProduto.setText(formattedValue);
-                        quantidadeProdutosPedido.setText(String.valueOf(pedido.getProdutoList().size()));
+                        quantidadeProdutosPedido.setText(String.valueOf(pedidoPdv.getProdutoList().size()));
 
                         double totalTemp = 0.0;
-                        for(Produto product: pedido.getProdutoList()){
+                        for(Produto product: pedidoPdv.getProdutoList()){
                             totalTemp += product.getPreco_venda() * 1;
                         }
-                        pedido.setTotalGeral(totalTemp);
+                        pedidoPdv.setTotalGeral(totalTemp);
                         Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drop_animation);
                         valoresPedidoPdv.startAnimation(animation);
-                        String total = currencyFormat.format(pedido.getTotalGeral());
+                        String total = currencyFormat.format(pedidoPdv.getTotalGeral());
                         cobrar.setText("Cobrar\n"+total);
-                        //Toast.makeText(getApplicationContext(), produtos.get(position).getDescricao()+"", Toast.LENGTH_SHORT).show();
+                        pedidoPdvViewModel.setPedido(pedidoPdv);
+
+//                        try{
+//                            SQLiteDatabase bancoDados = openOrCreateDatabase("pdv", MODE_PRIVATE, null);
+//
+//                            //criar tabela
+//                            bancoDados.execSQL("CREATE TABLE IF NOT EXISTS `users` (\n" +
+//                                    "  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+//                                    "  `name` varchar(100) DEFAULT NULL,\n" +
+//                                    "  `email` varchar(150) DEFAULT NULL,\n" +
+//                                    "  `senha` varchar(45) DEFAULT NULL\n" +
+//                                    ")");
+//
+//                            bancoDados.execSQL("INSERT INTO `users` ( `name`, `email`, `senha`) VALUES ( 'piu', 'piu@gmail', '321');");
+//                            Cursor cursor = bancoDados.rawQuery("SELECT * FROM users", null);
+//
+//                            //indice da tabela
+//                            int indiceNome = cursor.getColumnIndex("name");
+//                            int indiceId = cursor.getColumnIndex("id");
+//                            int indiceEmail = cursor.getColumnIndex("email");
+//                            int indiceSenha = cursor.getColumnIndex("senha");
+//
+//                            cursor.moveToFirst();
+//                            while (cursor != null){
+//                                Log.i("RESULTADO", cursor.getString(indiceId)+", "+cursor.getString(indiceNome) +", "+ cursor.getString(indiceEmail)+", "+cursor.getString(indiceSenha));
+//                                cursor.moveToNext();
+//                            }
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
+
+                        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(PdvActivity.this);
+                        databaseHelper.add();
+                        databaseHelper.getAll();
+
 
                     }
 
@@ -395,41 +425,77 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
 
     private void showBottomSheetDialogProdutos(Context context) {
 
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_produtos_pdv);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_produtos_pdv, null);
 
-        RecyclerView   recyclerViewProdutosCart = bottomSheetDialog.findViewById(R.id.recyclerProdutosSheet);
+        RecyclerView   recyclerViewProdutosCart = dialogView.findViewById(R.id.recyclerProdutosSheet);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerViewProdutosCart.setLayoutManager(layoutManager);
 
+        recyclerViewProdutosCart.addOnItemTouchListener(
+                new RecyclerItemClickListener(context.getApplicationContext(), recyclerViewProdutosCart, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
 
+                        Produto produto = pedidoPdv.getProdutoList().get(position);
+                        Intent intent = new Intent(PdvActivity.this, DetalheProdutoPdvctivity.class);
+                        intent.putExtra("produto", produto);
+                        startActivity(intent);
+                    }
 
-        ProdutosCartPdvAdapter  produtosCartPdvAdapter = new ProdutosCartPdvAdapter(pedido);
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+
+                    }
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    }
+                })
+        );
+
+        ProdutosCartPdvAdapter  produtosCartPdvAdapter = new ProdutosCartPdvAdapter(pedidoPdv);
         recyclerViewProdutosCart.setAdapter(produtosCartPdvAdapter);
         produtosCartPdvAdapter.notifyDataSetChanged();
 
 
 
-        Button buttonAlterar = bottomSheetDialog.findViewById(R.id.buttonAlterar);
-        ImageView acrescimo = bottomSheetDialog.findViewById(R.id.imageViewPlusDesconto);
-        TextView textViewAcrescimo = bottomSheetDialog.findViewById(R.id.textViewAcrescimo);
-        TextView textViewDesconto = bottomSheetDialog.findViewById(R.id.textViewDescontoProdutos);
-        String formattedDesconto = String.format("R$ %.2f", pedido.getDesconto());
-        String formattedAcrescimo = String.format("R$ %.2f", pedido.getAcrescimo());
-        textViewAcrescimo.setText("Acréscimo \n"+formattedAcrescimo);
-        textViewDesconto.setText("Desconto \n"+formattedDesconto);
+        Button buttonAlterar = dialogView.findViewById(R.id.buttonAlterar);
+        ImageView acrescimo = dialogView.findViewById(R.id.imageViewPlusDesconto);
+        ImageView desconto = dialogView.findViewById(R.id.imageViewMinusDesconto);
 
-        testeViewModel.getText().observe(this, new Observer<String>() {
+        TextView textViewAcrescimo = dialogView.findViewById(R.id.textViewAcrescimo);
+        TextView textViewDesconto = dialogView.findViewById(R.id.textViewDescontoProdutos);
+
+
+        pedidoPdvViewModel.getPedido().observe(this, new Observer<Pedido>() {
             @Override
-            public void onChanged(String s) {
-                textViewAcrescimo.setText(s);
+            public void onChanged(Pedido pedido) {
+                String formattedAcrescimo = String.format("R$ %.2f", pedido.getAcrescimo() /100);
+                String formattedDesconto = String.format("R$ %.2f", pedido.getDesconto() /100);
+                textViewAcrescimo.setText("Acréscimo \n"+formattedAcrescimo);
+                textViewDesconto.setText("Desconto \n"+formattedDesconto);
             }
         });
+
+//        testeViewModel.getText().observe(this, new Observer<String>() {
+//            @Override
+//            public void onChanged(String s) {
+//                textViewAcrescimo.setText(s);
+//            }
+//        });
 
         acrescimo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog(pedido);
+                showDialog("acrescimo");
+            }
+        });
+        desconto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog("desconto");
             }
         });
         buttonAlterar.setOnClickListener(new View.OnClickListener() {
@@ -444,38 +510,13 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         // LinearLayout download = bottomSheetDialog.findViewById(R.id.download);
         // LinearLayout delete = bottomSheetDialog.findViewById(R.id.delete);
 
-        bottomSheetDialog.show();
+        builder.setView(dialogView);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void showBottomSheetDialogCLientes(Context context) {
-
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_clientes_pdv);
-
-        RecyclerView   recyclerViewClientes = bottomSheetDialog.findViewById(R.id.recyclerViewClientesPdv);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        recyclerViewClientes.setLayoutManager(layoutManager);
-
-
-
-        ClientesCartPdvAdapter clientesCartPdvAdapter = new ClientesCartPdvAdapter(clientes);
-        recyclerViewClientes.setAdapter(clientesCartPdvAdapter);
-        clientesCartPdvAdapter.notifyDataSetChanged();
-
-        Button buttonAlterar = bottomSheetDialog.findViewById(R.id.buttonAdicionarCliente);
-        buttonAlterar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), CadastroClienteActivity.class);
-                startActivity(intent);
-            }
-        });
-        // LinearLayout share = bottomSheetDialog.findViewById(R.id.shareLinearLayout);
-        //LinearLayout upload = bottomSheetDialog.findViewById(R.id.uploadLinearLayout);
-        // LinearLayout download = bottomSheetDialog.findViewById(R.id.download);
-        // LinearLayout delete = bottomSheetDialog.findViewById(R.id.delete);
-
-        bottomSheetDialog.show();
+        DialogClientes.showModalClientes(PdvActivity.this, pedidoPdvViewModel);
     }
     private void showBottomSheetDialogCaixas() {
 
@@ -498,8 +539,8 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         bottomSheetDialog.show();
     }
 
-    private void showDialog(Pedido pedido) {
-        DialogHelper.showTecladoNumericoDescontoAcrescimo(PdvActivity.this, PdvActivity.this, pedido, testeViewModel);
+    private void showDialog(String tipo) {
+        DialogAcrescimoDecrescimo.showTecladoNumericoDescontoAcrescimo(PdvActivity.this, PdvActivity.this, pedidoPdvViewModel, tipo);
     }
 
     @Override
@@ -519,7 +560,7 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
     @Override
     public void onDataEntered(String data) {
         double value = Double.parseDouble(data) / 100;
-        pedido.setAcrescimo(value);
+        pedidoPdv.setAcrescimo(value);
         Toast.makeText(getApplicationContext(), value+"", Toast.LENGTH_LONG).show();
     }
 }

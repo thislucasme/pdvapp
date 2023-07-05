@@ -13,14 +13,13 @@ import androidx.lifecycle.Observer;
 import com.thislucasme.pdvapplication.R;
 import com.thislucasme.pdvapplication.callbacks.DialogTecladoAcrescimoDescontoCallBack;
 import com.thislucasme.pdvapplication.model.Pedido;
-import com.thislucasme.pdvapplication.model.Produto;
-import com.thislucasme.pdvapplication.viewmodel.TesteViewModel;
+import com.thislucasme.pdvapplication.viewmodel.PedidoPdvViewModel;
 
-public class DialogHelper {
+public class DialogAcrescimoDecrescimo {
     private static String currentTextTecladoNumerico = "";
-    public static void showTecladoNumericoDescontoAcrescimo(Context context, DialogTecladoAcrescimoDescontoCallBack dialogTecladoAcrescimoDesconto, Pedido pedido, TesteViewModel testeViewModel){
+    public static void showTecladoNumericoDescontoAcrescimo(Context context, DialogTecladoAcrescimoDescontoCallBack dialogTecladoAcrescimoDesconto, PedidoPdvViewModel pedidoPdvViewModel, String tipo){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.keyboard, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.keyboard_rasc, null);
         Button button = dialogView.findViewById(R.id.buttonConfirmar);
 
         Button um = dialogView.findViewById(R.id.buttonUm);
@@ -37,17 +36,26 @@ public class DialogHelper {
         ImageButton backSpace = dialogView.findViewById(R.id.buttonBackSpace);
         TextView desconto = dialogView.findViewById(R.id.textViewDesconto);
         TextView total = dialogView.findViewById(R.id.textViewTotal);
-        double value = Double.parseDouble(String.valueOf(pedido.getTotalGeral() * 100)) / 100;
-        String formattedText = String.format("R$ %.2f", value);
-        total.setText(formattedText);
+
+        //double value = Double.parseDouble(String.valueOf(pedido.getTotalGeral() * 100)) / 100;
+       // String formattedText = String.format("R$ %.2f", value);
+       // total.setText(formattedText);
 
         //total.setText(testeViewModel.getText());
+        pedidoPdvViewModel.getPedido().observe((LifecycleOwner) context, new Observer<Pedido>() {
+            @Override
+            public void onChanged(Pedido pedido) {
+                double value = Double.parseDouble(String.valueOf(pedido.getTotalGeral() * 100)) / 100;
+                 String formattedText = String.format("R$ %.2f", value);
+                 total.setText(formattedText);
+            }
+        });
 
         um.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //addToDisplay("1", desconto);
-                testeViewModel.setText("Çucas");
+                addToDisplay("1", desconto);
+                //testeViewModel.setText("Çucas");
             }
         });
         dois.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +131,15 @@ public class DialogHelper {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
-                dialogTecladoAcrescimoDesconto.onDataEntered(currentTextTecladoNumerico);
+               if(!currentTextTecladoNumerico.equals("")){
+                   if(tipo.equals("acrescimo")){
+                       pedidoPdvViewModel.setAcrescimo(Double.valueOf(currentTextTecladoNumerico));
+                   }else{
+                       pedidoPdvViewModel.setDesconto(Double.valueOf(currentTextTecladoNumerico));
+                   }
+
+               }
+                currentTextTecladoNumerico = "";
 
             }
         });

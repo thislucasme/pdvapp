@@ -1,20 +1,31 @@
 package com.thislucasme.pdvapplication.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.thislucasme.pdvapplication.converters.Converters;
+
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity(tableName = "pedidos")
 public class Pedido {
-    private String identificador;
+
+    @NonNull
+    @PrimaryKey(autoGenerate = true)
+    private Integer identificador;
     private String observacao;
     private Double acrescimo = 0.0;
     private Double desconto = 0.0;
+    @TypeConverters(Converters.class)
     private List<Produto> produtoList = new ArrayList<>();
     private double totalGeral = 0.0;
 
     public Pedido() {
     }
 
-    public Pedido(String identificador, String observacao, Double acrescimo, Double desconto, List<Produto> produtoList, double totalGeral) {
+    public Pedido(Integer identificador, String observacao, Double acrescimo, Double desconto, List<Produto> produtoList, double totalGeral) {
         this.identificador = identificador;
         this.observacao = observacao;
         this.acrescimo = acrescimo;
@@ -31,11 +42,11 @@ public class Pedido {
         this.totalGeral = totalGeral;
     }
 
-    public String getIdentificador() {
+    public Integer getIdentificador() {
         return identificador;
     }
 
-    public void setIdentificador(String identificador) {
+    public void setIdentificador(Integer identificador) {
         this.identificador = identificador;
     }
 
