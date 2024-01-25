@@ -2,27 +2,31 @@
 
 Este repositório contém o código-fonte do Sistema de Gestão de Vendas. Abaixo está o checklist de recursos a serem implementados ou verificados em cada área funcional do sistema.
 
-## CLIENTE
-- [ ] CADASTRAR
-- [ ] LISTAR
-- [ ] SELECIONAR NO PEDIDO
+## Cliente
+- [ ] Cadastrar Cliente front-end
+- [ ] Cadastrar Cliente back-end
+- [ ] Listar clientes - Front-end
+- [ ] Selecionar um usuário para um pedido
 
-## CAIXA
-- [ ] CADASTRAR
-- [ ] LISTAR
-- [ ] SELECIONAR PARA O CAIXA
+## Caixa
+- [ ] Cadastrar Caixa [usuário] front-end
+- [ ] Cadastrar Caixa[usuário] back-end
+- [ ] Listar usuários caixa - Front-end
+- [ ] Selecionar um usuário para o caixa
 
-## PDV [PEDIDO]
-- [ ] SALVAR COMO PENDENTE
-- [ ] TELA LISTAR OS PEDIDOS PENDENTES
-- [ ] ABRIR NOVA TELA ONDE LISTA PRODUTOS DE PEDIDOS PENDENTES
-- [ ] RECUPERAR PEDIDO PARA PDV
-- [ ] ATUALIZAR PEDIDO
+## PDV
+- [x] Salvar venda como venda direta - Front-end
+- [x] Salvar venda como venda direta - Back-end
+- [ ] Salvar venda como pendente
+- [ ] Tela listagem de pedidos pendentes
+- [ ] Abrir tela de listagem de produtos de pedido
+- [ ] Recuperar pedido para PDV
+- [ ] Atualizar pedido
 
-## ESTOQUE
-- [ ] CADASTRAR PRODUTO
-- [ ] DELETAR PRODUTO
-- [ ] EDITAR PRODUTO
-- [ ] BUG AO BUSCAR PRODUTOS
+## Estoque
+- [ ] Cadastrar produto
+- [ ] Deletar produto
+- [ ] Editar produto
+- [ ] Fix bug ao buscar produtos por nome
 
-Este checklist representa os recursos a serem implementados ou verificados em cada área funcional do sistema. Marque cada item conforme for concluído ou verificado.
+
