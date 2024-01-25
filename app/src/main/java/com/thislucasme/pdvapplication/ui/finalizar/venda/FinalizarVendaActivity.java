@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.thislucasme.pdvapplication.R;
 import com.thislucasme.pdvapplication.callbacks.DialogTecladoAcrescimoDescontoCallBack;
+import com.thislucasme.pdvapplication.enums.FormaPagamento;
+import com.thislucasme.pdvapplication.enums.StatusOrder;
 import com.thislucasme.pdvapplication.helpers.DialogFinalizarVenda;
 import com.thislucasme.pdvapplication.model.Pedido;
 import com.thislucasme.pdvapplication.model.Produto;
@@ -26,6 +28,8 @@ import com.thislucasme.pdvapplication.sqlite.DatabaseHandler;
 import com.thislucasme.pdvapplication.ui.detalheProdutoPdv.DetalheProdutoPdvctivity;
 
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,7 +70,7 @@ public class FinalizarVendaActivity extends AppCompatActivity implements DialogT
         linearLayoutDinheiro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                formaPagamento = 1;
+                formaPagamento = FormaPagamento.DINHEIRO.getFormaPagamento();
                 DialogFinalizarVenda.showTecladoNumericoFinalizarVenda(FinalizarVendaActivity.this, FinalizarVendaActivity.this);
                 //showCustomDialog();
             }
@@ -74,15 +78,15 @@ public class FinalizarVendaActivity extends AppCompatActivity implements DialogT
         linearLayoutCartaoDebito.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                formaPagamento = 2;
-                showCustomDialog();
+                formaPagamento = FormaPagamento.CARTAO_DEBITO.getFormaPagamento();
+                DialogFinalizarVenda.showTecladoNumericoFinalizarVenda(FinalizarVendaActivity.this, FinalizarVendaActivity.this);
             }
         });
         linearLayoutCartaoCredito.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                formaPagamento = 3;
-                showCustomDialog();
+                formaPagamento = FormaPagamento.CARTAO_CREDITO.getFormaPagamento();
+                DialogFinalizarVenda.showTecladoNumericoFinalizarVenda(FinalizarVendaActivity.this, FinalizarVendaActivity.this);
             }
         });
     }
@@ -102,6 +106,8 @@ public class FinalizarVendaActivity extends AppCompatActivity implements DialogT
         LinearLayout layoutTroco = dialogView.findViewById(R.id.layout_troco);
         TextView textViewTroco = dialogView.findViewById(R.id.textViewTroco);
         EditText descricao = dialogView.findViewById(R.id.editTextDescricao);
+        TextView data = dialogView.findViewById(R.id.textViewDataVenda);
+
         if(pedido.getTotalGeral() == troco){
             layoutTroco.setVisibility(View.GONE);
         }else {
@@ -109,21 +115,24 @@ public class FinalizarVendaActivity extends AppCompatActivity implements DialogT
             textViewTroco.setText( brazilianReal(troco - pedido.getTotalGeral() ));
         }
 
-        if(formaPagamento == 1){
+        if(formaPagamento == FormaPagamento.DINHEIRO.getFormaPagamento()){
             iconFormaPagamento.setImageResource(R.drawable.money);
             nomeFormaPagamento.setText("1 - Dinheiro");
         }
-        if(formaPagamento == 2){
+        if(formaPagamento == FormaPagamento.CARTAO_DEBITO.getFormaPagamento()){
             iconFormaPagamento.setImageResource(R.drawable.cartao_de_debito);
             nomeFormaPagamento.setText("2 - Cartão Débito");
         }
-        if(formaPagamento == 3){
+        if(formaPagamento == FormaPagamento.CARTAO_CREDITO.getFormaPagamento()){
             iconFormaPagamento.setImageResource(R.drawable.cartao_de_debito);
             nomeFormaPagamento.setText("3 - Cartão Crédito");
         }
         total.setText(brazilianReal(pedido.getTotalGeral()));
         builder.setView(dialogView);
         AlertDialog alertDialog = builder.create();
+
+        LocalDateTime agora = LocalDateTime.now();
+        data.setText(formatarLocalDateTimeParaiew(agora));
 
         finalizarCompra.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +142,13 @@ public class FinalizarVendaActivity extends AppCompatActivity implements DialogT
                 pedido.setAcrescimo(pedido.getAcrescimo() / 100);
                 pedido.setDesconto(pedido.getDesconto() / 100);
                 pedido.setObservacao(descricao.getText().toString());
+                LocalDateTime agora = LocalDateTime.now();
+                String formattedDateTime = formatarLocalDateTimeParaMySQL(agora);
+                pedido.setDataVenda(formattedDateTime);
+                //data.setText(formatarLocalDateTimeParaiew(agora));
+                pedido.setFormaPagamento(formaPagamento);
+                pedido.setOrderStatus(StatusOrder.CONCLUÍDO.getStatus());
+
                 if(produtoList.size() > 0){
                     pedido.setUserId(produtoList.get(0).getUserUuid());
                 }
@@ -155,6 +171,11 @@ public class FinalizarVendaActivity extends AppCompatActivity implements DialogT
                             if(response.code() == 201){
                                 //finalizarCompra.setEnabled(true);
                                 finalizarCompra.setText("Finalizar");
+                                // finalizarCompra.setEnabled(true);
+                                finalizarCompra.setText("Finalizar");
+
+                                showDialogPrint();
+                                alertDialog.dismiss();
                             }
                         } else {
                             // A solicitação falhou (código de resposta HTTP diferente de 2xx)
@@ -172,17 +193,22 @@ public class FinalizarVendaActivity extends AppCompatActivity implements DialogT
                         // Você pode lidar com o erro aqui
                         finalizarCompra.setEnabled(true);
                         finalizarCompra.setText("Finalizar");
+                        Toast.makeText(getApplicationContext(), "Erro ao Finalizar Venda", Toast.LENGTH_SHORT).show();
                     }
                 });
 
-               // finalizarCompra.setEnabled(true);
-                finalizarCompra.setText("Finalizar");
 
-                showDialogPrint();
-                alertDialog.dismiss();
             }
         });
         alertDialog.show();
+    }
+    public String formatarLocalDateTimeParaMySQL(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return localDateTime.format(formatter);
+    }
+    public String formatarLocalDateTimeParaiew(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return localDateTime.format(formatter);
     }
     private void showDialogPrint() {
         // Criar o construtor do AlertDialog

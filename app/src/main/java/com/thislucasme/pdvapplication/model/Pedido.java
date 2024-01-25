@@ -7,6 +7,7 @@ import androidx.room.TypeConverters;
 
 import com.thislucasme.pdvapplication.converters.Converters;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @Entity(tableName = "pedidos")
@@ -22,9 +23,13 @@ public class Pedido {
     private Double ultimoValorProduto = 0.0;
     private String ultimoNomeProduto;
     private String userId;
+    private String dataVenda;
     @TypeConverters(Converters.class)
     private List<Produto> produtoList = new ArrayList<>();
     private double totalGeral = 0.0;
+
+    private Integer orderStatus;
+    private Integer formaPagamento;
 
     public Pedido() {
     }
@@ -47,6 +52,30 @@ public class Pedido {
         this.quantidadeProdutosPedido = quantidadeProdutosPedido;
         this.ultimoNomeProduto = ultimoNomeProduto;
         this.ultimoValorProduto = ultimoValorProduto;
+    }
+
+    public Integer getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(Integer orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public Integer getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public void setFormaPagamento(Integer formaPagamento) {
+        this.formaPagamento = formaPagamento;
+    }
+
+    public String getDataVenda() {
+        return dataVenda;
+    }
+
+    public void setDataVenda(String dataVenda) {
+        this.dataVenda = dataVenda;
     }
 
     public String getUserId() {
@@ -129,6 +158,7 @@ public class Pedido {
         this.produtoList = produtoList;
     }
 
+
     @Override
     public String toString() {
         return "Pedido{" +
@@ -139,9 +169,12 @@ public class Pedido {
                 ", quantidadeProdutosPedido=" + quantidadeProdutosPedido +
                 ", ultimoValorProduto=" + ultimoValorProduto +
                 ", ultimoNomeProduto='" + ultimoNomeProduto + '\'' +
+                ", userId='" + userId + '\'' +
+                ", dataVenda='" + dataVenda + '\'' +
                 ", produtoList=" + produtoList +
                 ", totalGeral=" + totalGeral +
-                ", userId=" + userId +
+                ", orderStatus=" + orderStatus +
+                ", formaPagamento=" + formaPagamento +
                 '}';
     }
 }

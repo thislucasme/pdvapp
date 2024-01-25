@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/round_content_paste_24" />
+    <com.nex3z.notificationbadge.NotificationBadge
+        android:id="@+id/badge_count"
+        android:layout_toEndOf="@id/image"
+        android:layout_alignTop="@id/image"
+        android:layout_marginStart="-18dp"
+        app:nbAnimationEnabled="true"
+        app:nbAnimationDuration="1000"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:nbMaxTextLength="3"/>
+</RelativeLayout>

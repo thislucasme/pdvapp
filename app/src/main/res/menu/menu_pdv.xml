@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/codigoBarrasItem"
+        android:actionLayout="@layout/notification_icon_overlay"
         android:title="Item 1"
         android:iconTint="@color/white"
         android:icon="@drawable/round_content_paste_24"

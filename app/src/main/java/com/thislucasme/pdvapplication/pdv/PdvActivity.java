@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -31,12 +33,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
+import com.nex3z.notificationbadge.NotificationBadge;
 import com.thislucasme.pdvapplication.R;
 import com.thislucasme.pdvapplication.adapter.ProdutoAdapter;
 import com.thislucasme.pdvapplication.adapter.ProdutosCartPdvAdapter;
@@ -80,7 +84,7 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
     private ActivityResultLauncher<Intent> launcher;
     ProdutosCartPdvAdapter produtosCartPdvAdapter;
     RecyclerView recyclerViewProdutosCart;
-
+    static NotificationBadge mBadge;
 
     private ProdutoViewModel produtoViewModel;
     private RecyclerView recyclerView;
@@ -726,7 +730,22 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_pdv, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_pdv, menu);
+        // getting item id to get its layout
+        MenuItem item = menu.findItem(R.id.codigoBarrasItem);
+        MenuItemCompat.setActionView(item, R.layout.notification_icon_overlay);
+        // getting the layout from menu option to set badge actions
+        RelativeLayout notifCount = (RelativeLayout) MenuItemCompat.getActionView(item);
+        notifCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // what happens when icon is clicked
+               // openNotificationActivity();
+            }
+        });
+        mBadge = notifCount.findViewById(R.id.badge_count);
+        mBadge.setNumber(1);
         return true;
     }
 
