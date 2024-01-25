@@ -16,6 +16,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.finalizar.venda.FinalizarVendaActivity"
+            android:exported="false"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".pdv.PdvActivity" />
+        </activity>
+        <activity
             android:name=".cadastro.CadastroOperadorActivity"
             android:exported="false" />
         <activity

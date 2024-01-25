@@ -52,7 +52,7 @@
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/buttonConcluir"
             android:layout_width="wrap_content"
             android:layout_height="55dp"
             android:layout_weight="1"
@@ -75,7 +75,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/imageButton5"
+                android:id="@+id/imageButtonAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="55dp"
                 android:layout_weight="1"
@@ -89,11 +89,11 @@
                 android:background="@drawable/background_input"
                 android:ems="10"
                 android:gravity="center_horizontal|center_vertical"
-                android:hint="1"
+                android:hint="0"
                 android:inputType="number" />
 
             <ImageButton
-                android:id="@+id/imageButton4"
+                android:id="@+id/imageButtonRemove"
                 android:layout_width="wrap_content"
                 android:layout_height="55dp"
                 android:layout_weight="1"

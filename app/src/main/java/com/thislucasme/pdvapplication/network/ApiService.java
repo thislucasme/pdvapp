@@ -1,6 +1,7 @@
 package com.thislucasme.pdvapplication.network;
 
 
+import com.thislucasme.pdvapplication.model.Pedido;
 import com.thislucasme.pdvapplication.model.Produto;
 import com.thislucasme.pdvapplication.model.ProdutoResponse;
 import com.thislucasme.pdvapplication.model.Token;
@@ -22,4 +23,7 @@ public interface ApiService {
     Call<List<Produto>> getProdutos(@Query("page") int page, @Query("limit")  int limit, @Query("queryText")  String queryText);
     @GET("produtos/produto")
     Call<Produto> getProduto(@Query("codigoBarras")  String codigoBarras);
+
+    @POST("produtos/pedido")
+    Call<Void> criarPedido(@Body Pedido pedido);
 }

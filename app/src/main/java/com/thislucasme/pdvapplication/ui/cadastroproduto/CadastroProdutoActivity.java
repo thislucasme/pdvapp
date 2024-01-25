@@ -90,7 +90,7 @@ public class CadastroProdutoActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if(item.getItemId() == R.id.itemCodigoSalvarProduto){
+        if(item.getItemId() == R.id.itemCodigoDeletarProduto){
             Toast.makeText(getApplicationContext(), "Salvar produto", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);

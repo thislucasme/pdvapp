@@ -19,11 +19,11 @@ import com.thislucasme.pdvapplication.viewmodel.PedidoPdvViewModel;
 
 import java.util.List;
 
-public class DialogAcrescimoDecrescimo {
+public class DialogFinalizarVenda {
     private static String currentTextTecladoNumerico = "";
-    public static void showTecladoNumericoDescontoAcrescimo(Context context, DialogTecladoAcrescimoDescontoCallBack dialogTecladoAcrescimoDesconto, PedidoPdvViewModel pedidoPdvViewModel, String tipo){
+    public static void showTecladoNumericoFinalizarVenda(Context context, DialogTecladoAcrescimoDescontoCallBack dialogTecladoFinalizarVenda){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.keyboard_rasc, null);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.keyboard_finalizar, null);
         Button button = dialogView.findViewById(R.id.buttonConfirmar);
 
         Button um = dialogView.findViewById(R.id.buttonUm);
@@ -51,24 +51,17 @@ public class DialogAcrescimoDecrescimo {
         Pedido pedidoTemporario = pedidosTemp.get(0);
         String formattedText = String.format("R$ %.2f", pedidoTemporario.getTotalGeral());
         total.setText(formattedText);
+       // desconto.setText(formattedText);
+        //DialogFinalizarVenda.currentTextTecladoNumerico = String.valueOf(pedidoTemporario.getTotalGeral() * 100);
+        desconto.setText(String.format("R$ %.2f", Double.parseDouble(String.valueOf(pedidoTemporario.getTotalGeral())) ));
+//        if(tipo.equals("acrescimo")){
+//            String formattedAcrescimo = String.format("R$ %.2f", pedidoTemporario.getAcrescimo() / 100);
+//            desconto.setText(formattedAcrescimo);
+//        }else{
+//            String formattedDesconto = String.format("R$ %.2f", pedidoTemporario.getDesconto() / 100);
+//            desconto.setText(formattedDesconto);
+//        }
 
-        if(tipo.equals("acrescimo")){
-            String formattedAcrescimo = String.format("R$ %.2f", pedidoTemporario.getAcrescimo() / 100);
-            desconto.setText(formattedAcrescimo);
-        }else{
-            String formattedDesconto = String.format("R$ %.2f", pedidoTemporario.getDesconto() / 100);
-            desconto.setText(formattedDesconto);
-        }
-        Log.i("ELINA-", pedidoPdvViewModel.getPedido().getValue().toString());
-        Log.i("ELINA-", pedidoTemporario.toString());
-        pedidoPdvViewModel.getPedido().observe((LifecycleOwner) context, new Observer<Pedido>() {
-            @Override
-            public void onChanged(Pedido pedido) {
-                double value = Double.parseDouble(String.valueOf(pedido.getTotalGeral() * 100)) / 100;
-                 String formattedText = String.format("R$ %.2f", value);
-                // total.setText(formattedText);
-            }
-        });
 
         um.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,25 +143,26 @@ public class DialogAcrescimoDecrescimo {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
-               if(!currentTextTecladoNumerico.equals("")){
-                   if(tipo.equals("acrescimo")){
-                       pedidoPdvViewModel.setAcrescimo(Double.valueOf(currentTextTecladoNumerico));
-                       pedidoTemporario.setAcrescimo(Double.valueOf(currentTextTecladoNumerico));
-                       db.addOrUpdatePedido(pedidoTemporario);
-                       Log.i("JAJA", pedidoPdvViewModel.getPedido().getValue().toString());
-                       Log.i("JAJA", "======================");
-                       Log.i("JAJA", pedidoTemporario.toString());
-                   }else{
-                       pedidoPdvViewModel.setDesconto(Double.valueOf(currentTextTecladoNumerico));
-                       pedidoTemporario.setDesconto(Double.valueOf(currentTextTecladoNumerico));
-                       db.addOrUpdatePedido(pedidoTemporario);
-                       Log.i("JAJA", pedidoPdvViewModel.getPedido().getValue().toString());
-                       Log.i("JAJA", "======================");
-                       Log.i("JAJA", pedidoTemporario.toString());
-                   }
-
-               }
-                currentTextTecladoNumerico = "";
+                dialogTecladoFinalizarVenda.onDataEntered(currentTextTecladoNumerico);
+//               if(!currentTextTecladoNumerico.equals("")){
+//                   if(tipo.equals("acrescimo")){
+//                       pedidoPdvViewModel.setAcrescimo(Double.valueOf(currentTextTecladoNumerico));
+//                       pedidoTemporario.setAcrescimo(Double.valueOf(currentTextTecladoNumerico));
+//                       db.addOrUpdatePedido(pedidoTemporario);
+//                       Log.i("JAJA", pedidoPdvViewModel.getPedido().getValue().toString());
+//                       Log.i("JAJA", "======================");
+//                       Log.i("JAJA", pedidoTemporario.toString());
+//                   }else{
+//                       pedidoPdvViewModel.setDesconto(Double.valueOf(currentTextTecladoNumerico));
+//                       pedidoTemporario.setDesconto(Double.valueOf(currentTextTecladoNumerico));
+//                       db.addOrUpdatePedido(pedidoTemporario);
+//                       Log.i("JAJA", pedidoPdvViewModel.getPedido().getValue().toString());
+//                       Log.i("JAJA", "======================");
+//                       Log.i("JAJA", pedidoTemporario.toString());
+//                   }
+//
+//               }
+//                currentTextTecladoNumerico = "";
 
             }
         });

@@ -78,7 +78,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
             android:paddingLeft="5dp"
-            android:text="Acréscimo"
+            android:text="Valor recebido"
             android:textColor="@color/black" />
 
         <TextView
@@ -101,7 +101,8 @@
         android:layout_marginRight="5dp"
         android:orientation="horizontal"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/textView12"

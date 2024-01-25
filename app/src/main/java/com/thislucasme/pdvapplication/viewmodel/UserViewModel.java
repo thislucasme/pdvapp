@@ -24,6 +24,9 @@ public class UserViewModel {
         userRepository.logar(user, new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
+
+                Log.i("PATATI", user.getEmail()+", "+ user.getPassword().toString());
+                Log.i("PATATI", response.message());
                 if (response.isSuccessful()) {
                     // Requisição bem sucedida
                     String accessToken = response.headers().toString();

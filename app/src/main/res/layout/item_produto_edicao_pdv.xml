@@ -92,13 +92,14 @@
                     android:paddingBottom="2dp"
                     android:text="R$ 10,00"
                     android:textColor="#303030"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/imageView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     app:srcCompat="@drawable/round_delete_24" />
 
             </LinearLayout>

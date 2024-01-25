@@ -26,7 +26,8 @@ public class ProdutosCartPdvAdapter extends RecyclerView.Adapter<ProdutosCartPdv
     private Pedido pedido;
 
     public ProdutosCartPdvAdapter(Pedido pedidoItem) {
-        Log.i("JUIO", pedidoItem.getProdutoList().size()+"d");
+        Log.i("JUIO", pedidoItem.getProdutoList().size()+"lucas");
+
         this.pedido = pedidoItem;
     }
 
@@ -50,8 +51,11 @@ public class ProdutosCartPdvAdapter extends RecyclerView.Adapter<ProdutosCartPdv
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
         Produto produto = pedido.getProdutoList().get(i);
         Log.i("JUIO", pedido.getProdutoList().size()+"miue");
+        for (Produto product : pedido.getProdutoList()) {
+            Log.i("JUIO", product.toString());
+        }
         holder.nome.setText(produto.getDescricao());
-        holder.preco.setText(testBrazilianReal(produto.getPreco_venda()));
+        holder.preco.setText(testBrazilianReal(produto.getPreco_venda() * produto.getEstoque()));
         holder.id.setText(String.valueOf(produto.getId()));
         holder.quantidade.setText(String.valueOf(produto.getEstoque()));
 

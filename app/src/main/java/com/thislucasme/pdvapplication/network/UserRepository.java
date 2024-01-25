@@ -3,6 +3,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.thislucasme.pdvapplication.R;
 import com.thislucasme.pdvapplication.login.LoginActivity;
 import com.thislucasme.pdvapplication.model.Token;
 import com.thislucasme.pdvapplication.model.User;
@@ -44,7 +45,7 @@ public class UserRepository {
         }).build();
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
-                .baseUrl("http://192.168.0.110:8081/")
+                .baseUrl("https://2e6e-177-152-104-103.ngrok-free.app")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

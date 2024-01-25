@@ -1,5 +1,7 @@
-package com.thislucasme.pdvapplication.pdv;
+    package com.thislucasme.pdvapplication.pdv;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,19 +42,27 @@ import com.thislucasme.pdvapplication.adapter.ProdutoAdapter;
 import com.thislucasme.pdvapplication.adapter.ProdutosCartPdvAdapter;
 import com.thislucasme.pdvapplication.cadastro.CadastroOperadorActivity;
 import com.thislucasme.pdvapplication.callbacks.DialogTecladoAcrescimoDescontoCallBack;
+import com.thislucasme.pdvapplication.helpers.DBHelper;
 import com.thislucasme.pdvapplication.helpers.DialogAcrescimoDecrescimo;
 import com.thislucasme.pdvapplication.helpers.DialogClientes;
+import com.thislucasme.pdvapplication.model.EstudanteList;
 import com.thislucasme.pdvapplication.model.PaginationInfo;
 import com.thislucasme.pdvapplication.model.Pedido;
 import com.thislucasme.pdvapplication.model.Produto;
 import com.thislucasme.pdvapplication.model.Vendedor;
+import com.thislucasme.pdvapplication.preference.PreferencesManager;
 import com.thislucasme.pdvapplication.recycler.RecyclerItemClickListener;
+import com.thislucasme.pdvapplication.sqlite.DatabaseHandler;
 import com.thislucasme.pdvapplication.teste.DatabaseHelper;
 import com.thislucasme.pdvapplication.ui.cadastroprodutos.ListagemProdutosActivity;
 import com.thislucasme.pdvapplication.ui.detalheProdutoPdv.DetalheProdutoPdvctivity;
+import com.thislucasme.pdvapplication.ui.finalizar.venda.FinalizarVendaActivity;
 import com.thislucasme.pdvapplication.viewmodel.PedidoPdvViewModel;
 import com.thislucasme.pdvapplication.viewmodel.ProdutoViewModel;
 import com.thislucasme.pdvapplication.viewmodel.TesteViewModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -65,14 +75,20 @@ import retrofit2.Response;
 
 public class PdvActivity extends AppCompatActivity implements DialogTecladoAcrescimoDescontoCallBack {
     FloatingActionButton floatingActionButton;
+    private static final String CHAVE_DADO = "chave_dado";
+    private static final int REQUEST_CODE_ACTIVITY_B = 1;
+    private ActivityResultLauncher<Intent> launcher;
+    ProdutosCartPdvAdapter produtosCartPdvAdapter;
+    RecyclerView recyclerViewProdutosCart;
+
+
     private ProdutoViewModel produtoViewModel;
     private RecyclerView recyclerView;
     private ProdutoAdapter produtoAdapter;
     private List<Produto> produtos = new ArrayList<>();
     private int limit = 12;
-    private  int currentPage = 1;
-    private  int total = 0;
-
+    private int currentPage = 1;
+    private int total = 0;
 
 
     private boolean isLastPage = false;
@@ -98,7 +114,8 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
 
     private TesteViewModel testeViewModel;
     private PedidoPdvViewModel pedidoPdvViewModel;
-
+    private DBHelper mydb;
+    DatabaseHandler db;
 
 
     @SuppressLint("RestrictedApi")
@@ -108,12 +125,76 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         setContentView(R.layout.activity_pdv);
         getSupportActionBar().setTitle("Pdv");
 
+        pedidoPdv = new Pedido();
+        db = new DatabaseHandler(this);
+
+
+        List<Produto> prods = new ArrayList<>();
+
+        Produto produto1 = new Produto(1, 1, 1, 10, "123456789", "Observação do Produto 1", 1, 0, 1, 1, 1, "Produto 1", "https://example.com/imagem1.jpg", 5.0, 10.0,"","", 2);
+        //db.addProduto(produto1, 1);
+        prods.add(produto1);
+        Produto produto2 = new Produto(2, 2, 2, 20, "987654321", "Observação do Produto 2", 1, 1, 0, 2, 1, "Produto 2", "https://example.com/imagem2.jpg", 8.0, 15.0,"", "", 3);
+        prods.add(produto2);
+        //db.addProduto(produto2, 1);
+
+        Pedido pedidoFicticio = new Pedido(
+                1,
+                null,
+                0.0,
+                0.0,
+                prods,
+                0.0,
+                0,
+                0.0,
+                null
+        );
+        List<Pedido> pedidos = db.getAllPedidos();
+        if (pedidos.size() <= 0) {
+            db.addOrUpdatePedido(pedidoFicticio);
+        }
+
+        //db.updatePedido(pedidoFicticio);
+        //db.addPedido(pedidoFicticio);
+        // Inserting Students
+        //Log.d("bancodedados: ", "Inserting ..");
+        //db.addStudent(new EstudanteList(1, "A"));
+        //db.addStudent(new EstudanteList(2, "B"));
+        //db.addStudent(new EstudanteList(3, "C"));
+
+        // Reading all Students
+//        Log.d("bancodedados: ", "Reading all students..");
+//        List<EstudanteList> students = db.getAllStudentList();
+        List<Produto> prodDb = db.getProdutosByPedidoId(1);
+        for (Produto p : prodDb) {
+            Log.i("JUJUBI", p.toString());
+        }
+        pedidoPdv.setProdutoList(prodDb);
+        Log.i("JUJUBI", prodDb.size() + " produtos");
+        List<Pedido> ped = db.getAllPedidos();
+        Log.i("JUJUBI", ped.get(0).getTotalGeral() + " total geral");
+//        try{
+//            //List<Pedido> pedidos =  db.getAllPedidos();
+//            Log.i("JUJUBI", pedidos.size()+" pedidos");
+//            Log.i("JUJUBI", "id:"+pedidos.get(0).getIdentificador());
+//            Log.d("JUJUBI: ",
+//                    pedidos.get(0).getObservacao()+
+//                            ", identificador: "+pedidos.get(0).getIdentificador()+
+//                            ", total"+pedidos.get(0).getTotalGeral()+
+//                            ", ultimo valor: "+pedidos.get(0).getUltimoValorProduto()+
+//                    "quantidade produtos:"+pedidos.get(0).getProdutoList().size()+
+//                            "id:"+pedidos.get(0).getProdutoList().size());
+//        }catch (Exception e){
+//            Log.i("JUJUBI", "error:"+e.getMessage());
+//        }
+
+
         serverLinarError = findViewById(R.id.serverErro);
         imageError = findViewById(R.id.imageError);
         messageError = findViewById(R.id.textViewMessageServer);
         ultimoNomeProduto = findViewById(R.id.textViewUltimoProdutoName);
         ultimoValorProduto = findViewById(R.id.textViewUltimoValorProduto);
-        quantidadeProdutosPedido =  findViewById(R.id.textViewQuantidadeProdutosPedido);
+        quantidadeProdutosPedido = findViewById(R.id.textViewQuantidadeProdutosPedido);
         cobrar = findViewById(R.id.buttonCobrarPdv);
         valoresPedidoPdv = findViewById(R.id.valoresPedidoPDV);
         linearLayoutClientes = findViewById(R.id.linearLayoutCliente);
@@ -129,11 +210,9 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         pedidoPdvViewModel = new ViewModelProvider(this).get(PedidoPdvViewModel.class);
 
 
-
         produtoAdapter = new ProdutoAdapter();
         produtoAdapter.setItems(produtos);
 
-        pedidoPdv = new Pedido();
 
         //vendedores
         Vendedor vendedor = new Vendedor();
@@ -143,9 +222,73 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         vendedor.setNome("Eduardo");
         vendedores.add(vendedor);
 
+        showDatasProductOnPdv(db);
+
+        launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Log.i("ELINA", "TESTE");
+                   Toast.makeText(getApplicationContext(), "CAIU NA FUNÇÃO", Toast.LENGTH_SHORT).show();
+                    if (result.getResultCode() == RESULT_OK) {
+                      //  Toast.makeText(getApplicationContext(), "ATUALIZADO", Toast.LENGTH_SHORT).show();
+                        Intent data = result.getData();
+                        //tvResult.setText(data.getStringExtra("result"));
+
+                        getSupportActionBar().setTitle("Lucas");
+                        List<Produto> products = db.getProdutosByPedidoId(1);
+
+                        double totalTemp = 0.0;
+                        for (Produto product : products) {
+                            totalTemp += product.getPreco_venda() * product.getEstoque();
+
+                        }
+                        pedidoPdv.setTotalGeral(totalTemp);
+
+                        pedidoPdv.setProdutoList(new ArrayList<Produto>());
+                        pedidoPdv.setProdutoList(products);
+                        for (Produto product : products) {
+                            Log.i("ELINA", product.toString());
+                        }
+
+
+                        //CARREGAR PDV
+
+
+//                        List<Produto> produtoList = db.getProdutosByPedidoId(1);
+//                        double totalTemp = 0.0;
+//                        for (Produto product : produtoList) {
+//                            totalTemp += product.getPreco_venda() * product.getEstoque();
+//                        }
+//                        List<Pedido> pedidosTemp = db.getAllPedidos();
+//                        Pedido pedidoTemporario = pedidosTemp.get(0);
+//                        pedidoTemporario.setTotalGeral(totalTemp);
+//                        pedidoTemporario.setProdutoList(produtoList);
+//
+//                        db.addOrUpdatePedido(pedidoTemporario);
+//                        pedidoPdv = pedidoTemporario;
+//
+//
+                        showDatasProductOnPdv(db);
+                        produtosCartPdvAdapter = new ProdutosCartPdvAdapter(pedidoPdv);
+                        recyclerViewProdutosCart.setAdapter(produtosCartPdvAdapter);
+                        produtosCartPdvAdapter.notifyDataSetChanged();
+                       pedidoPdvViewModel.setPedido(pedidoPdv);
+
+                    }
+                }
+        );
 
 
         getSupportActionBar().setTitle("Carregando...");
+        cobrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               if(pedidoPdv.getTotalGeral() > 0){
+                   Intent i =  new Intent(getApplicationContext(), FinalizarVendaActivity.class);
+                   startActivity(i);
+               }
+            }
+        });
         searchView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -162,7 +305,7 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
                         hiddenServerError();
                         if (response.isSuccessful()) {
 
-                            if(response.body() != null){
+                            if (response.body() != null) {
 
                                 String json = response.headers().get("Custom-Header");
                                 Gson gson = new Gson();
@@ -174,12 +317,12 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
                                 getSupportActionBar().setTitle("Produtos");
                             }
 
-                            if(response.code() == 204){
+                            if (response.code() == 204) {
                                 showNotFound();
                             }
-                        }else{
+                        } else {
                             getSupportActionBar().setTitle("Produtos");
-                            if(response.code() >= 500 || response.code() <= 599) {
+                            if (response.code() >= 500 || response.code() <= 599) {
                                 Toast.makeText(getApplicationContext(), "Erro ao conectar ao servidor", Toast.LENGTH_SHORT).show();
                                 showServerError();
                             }
@@ -210,11 +353,11 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         valoresPedidoPdv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if(pedidoPdv != null){
-                   if(pedidoPdv.getProdutoList().size() > 0){
-                       showBottomSheetDialogProdutos(PdvActivity.this);
-                   }
-               }
+                if (pedidoPdv != null) {
+                    if (pedidoPdv.getProdutoList().size() > 0) {
+                        showBottomSheetDialogProdutos(PdvActivity.this);
+                    }
+                }
             }
         });
         linearLayoutClientes.setOnClickListener(new View.OnClickListener() {
@@ -228,25 +371,27 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
             @Override
             public void onResponse(Call<List<Produto>> call, Response<List<Produto>> response) {
 
+                Log.i("JURURU", "TESTE");
                 hiddenNotFount();
                 hiddenServerError();
                 if (response.isSuccessful()) {
-                    if(response.body() != null){
+                    if (response.body() != null) {
                         String json = response.headers().get("Custom-Header");
                         Gson gson = new Gson();
                         PaginationInfo paginationInfo = gson.fromJson(json, PaginationInfo.class);
                         total = paginationInfo.getTotal();
                         produtos = response.body();
+                        Log.i("PRODUTOS", produtos.get(0).toString());
                         produtoAdapter.setItems(produtos);
                         produtoAdapter.notifyDataSetChanged();
                         getSupportActionBar().setTitle("Produtos");
                     }
-                }else{
+                } else {
                     getSupportActionBar().setTitle("Produtos");
-                    if(response.code() >= 500 || response.code() <= 599){
+                    if (response.code() >= 500 || response.code() <= 599) {
                         showServerError();
                     }
-                    if(response.code() == 204){
+                    if (response.code() == 204) {
                         showNotFound();
                     }
                     //Toast.makeText(getApplicationContext(), "is not sucess "+response.code(), Toast.LENGTH_SHORT).show();
@@ -256,7 +401,8 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
 
             @Override
             public void onFailure(Call<List<Produto>> call, Throwable t) {
-                getSupportActionBar().setTitle("Produtos");
+                getSupportActionBar().setTitle("ERRO");
+                Log.i("JURURU", t.getMessage());
             }
 
         }, limit, currentPage, "");
@@ -286,59 +432,36 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
 
                         Produto produto = produtos.get(position);
                         produto.setEstoque(1);
-                        pedidoPdv.getProdutoList().add(produto);
-                        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
-                        //Formatando o valor para a moeda brasileira
-                        String formattedValue = currencyFormat.format(produto.getPreco_venda());
-                        ultimoNomeProduto.setText(produto.getDescricao());
-                        ultimoValorProduto.setText(formattedValue);
-                        quantidadeProdutosPedido.setText(String.valueOf(pedidoPdv.getProdutoList().size()));
+                        //adicionando o produto ao banco
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                        db.addProduto(produto, 1);
+                        Log.i("JOKER", produto.toString());
 
+                        List<Produto> produtoList = db.getProdutosByPedidoId(1);
                         double totalTemp = 0.0;
-                        for(Produto product: pedidoPdv.getProdutoList()){
-                            totalTemp += product.getPreco_venda() * 1;
+                        for (Produto product : produtoList) {
+                            totalTemp += product.getPreco_venda() * product.getEstoque();
                         }
-                        pedidoPdv.setTotalGeral(totalTemp);
-                        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drop_animation);
-                        valoresPedidoPdv.startAnimation(animation);
-                        String total = currencyFormat.format(pedidoPdv.getTotalGeral());
-                        cobrar.setText("Cobrar\n"+total);
+                        List<Pedido> pedidosTemp = db.getAllPedidos();
+                        Pedido pedidoTemporario = pedidosTemp.get(0);
+                        Pedido pedidoFicticio = new Pedido(
+                                1,
+                                pedidoTemporario.getObservacao(),
+                                pedidoTemporario.getAcrescimo(),
+                                pedidoTemporario.getDesconto(),
+                                produtoList,
+                                totalTemp,
+                                produtoList.size(),
+                                produto.getPreco_venda(),
+                                produto.getDescricao()
+                        );
+                        db.addOrUpdatePedido(pedidoFicticio);
+                        pedidoPdv = pedidoFicticio;
+
+
+                        showDatasProductOnPdv(db);
                         pedidoPdvViewModel.setPedido(pedidoPdv);
-
-//                        try{
-//                            SQLiteDatabase bancoDados = openOrCreateDatabase("pdv", MODE_PRIVATE, null);
-//
-//                            //criar tabela
-//                            bancoDados.execSQL("CREATE TABLE IF NOT EXISTS `users` (\n" +
-//                                    "  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-//                                    "  `name` varchar(100) DEFAULT NULL,\n" +
-//                                    "  `email` varchar(150) DEFAULT NULL,\n" +
-//                                    "  `senha` varchar(45) DEFAULT NULL\n" +
-//                                    ")");
-//
-//                            bancoDados.execSQL("INSERT INTO `users` ( `name`, `email`, `senha`) VALUES ( 'piu', 'piu@gmail', '321');");
-//                            Cursor cursor = bancoDados.rawQuery("SELECT * FROM users", null);
-//
-//                            //indice da tabela
-//                            int indiceNome = cursor.getColumnIndex("name");
-//                            int indiceId = cursor.getColumnIndex("id");
-//                            int indiceEmail = cursor.getColumnIndex("email");
-//                            int indiceSenha = cursor.getColumnIndex("senha");
-//
-//                            cursor.moveToFirst();
-//                            while (cursor != null){
-//                                Log.i("RESULTADO", cursor.getString(indiceId)+", "+cursor.getString(indiceNome) +", "+ cursor.getString(indiceEmail)+", "+cursor.getString(indiceSenha));
-//                                cursor.moveToNext();
-//                            }
-//                        }catch (Exception e){
-//                            e.printStackTrace();
-//                        }
-
-                        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(PdvActivity.this);
-                        databaseHelper.add();
-                        databaseHelper.getAll();
-
 
                     }
 
@@ -363,12 +486,48 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
             }
         });
     }
-    public void showServerError(){
+
+    public void showServerError() {
         recyclerView.setVisibility(View.GONE);
         imageError.setImageResource(R.drawable.undraw_server_down_s4lk);
         serverLinarError.setVisibility(View.VISIBLE);
 
-    };
+    }
+
+    ;
+
+    private void showDatasProductOnPdv(DatabaseHandler db) {
+        PreferencesManager preferencesManager = new PreferencesManager(getApplicationContext());
+
+        Log.i("JUJUBI",  "token:"+preferencesManager.getUserToken());
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        List<Pedido> pedidos = db.getAllPedidos();
+        Pedido pedidoTemporario = pedidos.get(0);
+        ultimoNomeProduto.setText(pedidoTemporario.getUltimoNomeProduto());
+        String formattedValue = currencyFormat.format(pedidoTemporario.getUltimoValorProduto());
+        ultimoValorProduto.setText(formattedValue);
+        String total = currencyFormat.format(pedidoTemporario.getTotalGeral());
+        cobrar.setText("Cobrar\n" + total);
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.drop_animation);
+        valoresPedidoPdv.startAnimation(animation);
+        List<Produto> produtoList = db.getProdutosByPedidoId(1);
+        quantidadeProdutosPedido.setText(String.valueOf(produtoList.size()));
+        Pedido pedidoFicticio = new Pedido(
+                1,
+                pedidoTemporario.getObservacao(),
+                pedidoTemporario.getAcrescimo(),
+                pedidoTemporario.getDesconto(),
+                produtoList,
+                pedidoTemporario.getTotalGeral(),
+                produtoList.size(),
+                pedidoTemporario.getUltimoValorProduto(),
+                pedidoTemporario.getUltimoNomeProduto()
+        );
+        pedidoPdv = pedidoFicticio;
+
+
+    }
+
     private void loadMoreItems() {
         isLoading = true;
         currentPage++;
@@ -378,8 +537,8 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
             @Override
             public void onResponse(Call<List<Produto>> call, Response<List<Produto>> response) {
                 if (response.isSuccessful()) {
-                    if(response.body() != null){
-                        if(produtos.size() >= total){
+                    if (response.body() != null) {
+                        if (produtos.size() >= total) {
                             isLastPage = true;
                         }
                         for (Produto p : response.body()) {
@@ -404,31 +563,40 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         Log.i("JUBI", "carregando..." + currentPage);
 
     }
-    public void hiddenServerError(){
+
+    public void hiddenServerError() {
         recyclerView.setVisibility(View.VISIBLE);
         serverLinarError.setVisibility(View.INVISIBLE);
         messageError.setText("Erro no servidor");
 
-    };
-    public void showNotFound(){
+    }
+
+    ;
+
+    public void showNotFound() {
         recyclerView.setVisibility(View.GONE);
         imageError.setImageResource(R.drawable.undraw_empty_re_opql);
         serverLinarError.setVisibility(View.VISIBLE);
         messageError.setText("Item não encontrado");
 
-    };
-    public void hiddenNotFount(){
+    }
+
+    ;
+
+    public void hiddenNotFount() {
         recyclerView.setVisibility(View.VISIBLE);
         serverLinarError.setVisibility(View.INVISIBLE);
 
-    };
+    }
+
+    ;
 
     private void showBottomSheetDialogProdutos(Context context) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_produtos_pdv, null);
 
-        RecyclerView   recyclerViewProdutosCart = dialogView.findViewById(R.id.recyclerProdutosSheet);
+        recyclerViewProdutosCart = dialogView.findViewById(R.id.recyclerProdutosSheet);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerViewProdutosCart.setLayoutManager(layoutManager);
 
@@ -438,9 +606,15 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
                     public void onItemClick(View view, int position) {
 
                         Produto produto = pedidoPdv.getProdutoList().get(position);
+                        //Toast.makeText(getApplicationContext(), produto.getId()+"oi", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(PdvActivity.this, DetalheProdutoPdvctivity.class);
                         intent.putExtra("produto", produto);
-                        startActivity(intent);
+                        //startActivity(intent);
+//                        startActivityForResult(intent, DETALHE_PRODUTO_REQUEST_CODE);
+                        launcher.launch(intent);
+
+
+
                     }
 
                     @Override
@@ -455,10 +629,9 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
                 })
         );
 
-        ProdutosCartPdvAdapter  produtosCartPdvAdapter = new ProdutosCartPdvAdapter(pedidoPdv);
+        produtosCartPdvAdapter = new ProdutosCartPdvAdapter(pedidoPdv);
         recyclerViewProdutosCart.setAdapter(produtosCartPdvAdapter);
         produtosCartPdvAdapter.notifyDataSetChanged();
-
 
 
         Button buttonAlterar = dialogView.findViewById(R.id.buttonAlterar);
@@ -468,16 +641,23 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         TextView textViewAcrescimo = dialogView.findViewById(R.id.textViewAcrescimo);
         TextView textViewDesconto = dialogView.findViewById(R.id.textViewDescontoProdutos);
 
+        DatabaseHandler db =   new DatabaseHandler(context);
+        List<Pedido> pedidosTemp = db.getAllPedidos();
+        Pedido pedidoTemporario = pedidosTemp.get(0);
 
         pedidoPdvViewModel.getPedido().observe(this, new Observer<Pedido>() {
             @Override
             public void onChanged(Pedido pedido) {
-                String formattedAcrescimo = String.format("R$ %.2f", pedido.getAcrescimo() /100);
-                String formattedDesconto = String.format("R$ %.2f", pedido.getDesconto() /100);
-                textViewAcrescimo.setText("Acréscimo \n"+formattedAcrescimo);
-                textViewDesconto.setText("Desconto \n"+formattedDesconto);
+                String formattedAcrescimo = String.format("R$ %.2f", pedido.getAcrescimo() / 100);
+                String formattedDesconto = String.format("R$ %.2f", pedido.getDesconto() / 100);
+                textViewAcrescimo.setText("Acréscimo \n" + formattedAcrescimo);
+                textViewDesconto.setText("Desconto \n" + formattedDesconto);
             }
         });
+        String formattedAcrescimo = String.format("R$ %.2f", pedidoTemporario.getAcrescimo() / 100);
+        String formattedDesconto = String.format("R$ %.2f", pedidoTemporario.getDesconto() / 100);
+        textViewAcrescimo.setText("Acréscimo \n" + formattedAcrescimo);
+        textViewDesconto.setText("Desconto \n" + formattedDesconto);
 
 //        testeViewModel.getText().observe(this, new Observer<String>() {
 //            @Override
@@ -518,6 +698,7 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
     private void showBottomSheetDialogCLientes(Context context) {
         DialogClientes.showModalClientes(PdvActivity.this, pedidoPdvViewModel);
     }
+
     private void showBottomSheetDialogCaixas() {
 
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
@@ -548,10 +729,11 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
         getMenuInflater().inflate(R.menu.menu_pdv, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if(item.getItemId() == R.id.itemCodigoSalvarProduto){
+        if (item.getItemId() == R.id.itemCodigoDeletarProduto) {
             Toast.makeText(getApplicationContext(), "Salvar cliente", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
@@ -561,7 +743,52 @@ public class PdvActivity extends AppCompatActivity implements DialogTecladoAcres
     public void onDataEntered(String data) {
         double value = Double.parseDouble(data) / 100;
         pedidoPdv.setAcrescimo(value);
-        Toast.makeText(getApplicationContext(), value+"", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), value + "", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+
+        List<Produto> products = db.getProdutosByPedidoId(1);
+
+        double totalTemp = 0.0;
+        for (Produto product : products) {
+            totalTemp += product.getPreco_venda() * product.getEstoque();
+
+        }
+        pedidoPdv.setTotalGeral(totalTemp);
+
+        pedidoPdv.setProdutoList(new ArrayList<Produto>());
+        pedidoPdv.setProdutoList(products);
+        for (Produto product : products) {
+            Log.i("ELINA", product.toString());
+        }
+
+
+        //CARREGAR PDV
+
+
+//                        List<Produto> produtoList = db.getProdutosByPedidoId(1);
+//                        double totalTemp = 0.0;
+//                        for (Produto product : produtoList) {
+//                            totalTemp += product.getPreco_venda() * product.getEstoque();
+//                        }
+//                        List<Pedido> pedidosTemp = db.getAllPedidos();
+//                        Pedido pedidoTemporario = pedidosTemp.get(0);
+//                        pedidoTemporario.setTotalGeral(totalTemp);
+//                        pedidoTemporario.setProdutoList(produtoList);
+//
+//                        db.addOrUpdatePedido(pedidoTemporario);
+//                        pedidoPdv = pedidoTemporario;
+//
+//
+        showDatasProductOnPdv(db);
+        super.onResume();
     }
 }
 

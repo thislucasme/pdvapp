@@ -18,11 +18,11 @@ public class Produto implements Serializable {
     @SerializedName("observacao")
     private String observacao;
     @SerializedName("controlar_estoque")
-    private Boolean controlarEstoque = true;
+    private Integer controlarEstoque = 0;
     @SerializedName("venda_fracionada")
-    private Boolean vendaFracionada = false;
+    private Integer vendaFracionada = 0;
     @SerializedName("valor_aberto")
-    private Boolean valorAberto;
+    private Integer valorAberto;
     @SerializedName("fornecedores_id")
     private Integer fornecedoresId;
     @SerializedName("users_id")
@@ -35,7 +35,10 @@ public class Produto implements Serializable {
     private Double preco_custo = 0.0;
     @SerializedName("preco_venda")
     private Double preco_venda = 0.0;
-
+    @SerializedName("uuid")
+    private String uuid;
+    @SerializedName("user_uuid")
+    private String userUuid;
     private Integer quantidade = 0;
 
     public Produto() {
@@ -44,7 +47,7 @@ public class Produto implements Serializable {
     // Construtor
 
 
-    public Produto(int id, Integer categoriasId, Integer promocaoId, int estoque, String codigoBarras, String observacao, Boolean controlarEstoque, Boolean vendaFracionada, Boolean valorAberto, Integer fornecedoresId, int usersId, String descricao, String urlImagem, Double preco_custo, Double preco_venda, Integer quantidade) {
+    public Produto(int id, Integer categoriasId, Integer promocaoId, int estoque, String codigoBarras, String observacao, Integer controlarEstoque, Integer vendaFracionada, Integer valorAberto, Integer fornecedoresId, int usersId, String descricao, String urlImagem, Double preco_custo, Double preco_venda, String uuid, String userUuid, Integer quantidade) {
         this.id = id;
         this.categoriasId = categoriasId;
         this.promocaoId = promocaoId;
@@ -60,7 +63,25 @@ public class Produto implements Serializable {
         this.urlImagem = urlImagem;
         this.preco_custo = preco_custo;
         this.preco_venda = preco_venda;
+        this.uuid = uuid;
+        this.userUuid = userUuid;
         this.quantidade = quantidade;
+    }
+
+    public String getUserUuid() {
+        return userUuid;
+    }
+
+    public void setUserUuid(String userUuid) {
+        this.userUuid = userUuid;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public void setId(int id) {
@@ -87,15 +108,15 @@ public class Produto implements Serializable {
         this.observacao = observacao;
     }
 
-    public void setControlarEstoque(Boolean controlarEstoque) {
+    public void setControlarEstoque(Integer controlarEstoque) {
         this.controlarEstoque = controlarEstoque;
     }
 
-    public void setVendaFracionada(Boolean vendaFracionada) {
+    public void setVendaFracionada(Integer vendaFracionada) {
         this.vendaFracionada = vendaFracionada;
     }
 
-    public void setValorAberto(Boolean valorAberto) {
+    public void setValorAberto(Integer valorAberto) {
         this.valorAberto = valorAberto;
     }
 
@@ -164,15 +185,15 @@ public class Produto implements Serializable {
         return observacao;
     }
 
-    public Boolean getControlarEstoque() {
+    public Integer getControlarEstoque() {
         return controlarEstoque;
     }
 
-    public Boolean getVendaFracionada() {
+    public Integer getVendaFracionada() {
         return vendaFracionada;
     }
 
-    public Boolean getValorAberto() {
+    public Integer getValorAberto() {
         return valorAberto;
     }
 
@@ -190,5 +211,29 @@ public class Produto implements Serializable {
 
     public String getUrlImagem() {
         return urlImagem;
+    }
+
+    @Override
+    public String toString() {
+        return "Produto{" +
+                "id=" + id +
+                ", categoriasId=" + categoriasId +
+                ", promocaoId=" + promocaoId +
+                ", estoque=" + estoque +
+                ", codigoBarras='" + codigoBarras + '\'' +
+                ", observacao='" + observacao + '\'' +
+                ", controlarEstoque=" + controlarEstoque +
+                ", vendaFracionada=" + vendaFracionada +
+                ", valorAberto=" + valorAberto +
+                ", fornecedoresId=" + fornecedoresId +
+                ", usersId=" + usersId +
+                ", descricao='" + descricao + '\'' +
+                ", urlImagem='" + urlImagem + '\'' +
+                ", preco_custo=" + preco_custo +
+                ", preco_venda=" + preco_venda +
+                ", quantidade=" + quantidade +
+                ", uuid=" + uuid +
+                ", user Uuid=" + userUuid +
+                '}';
     }
 }

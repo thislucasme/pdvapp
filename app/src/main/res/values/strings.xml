@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PDV</string>
+    <string name="app_name">PDV - project</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -12,5 +12,6 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_cadastro_produto">Cadastro Produto</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="url_api">https://7dcf-177-152-104-103.ngrok-free.app</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

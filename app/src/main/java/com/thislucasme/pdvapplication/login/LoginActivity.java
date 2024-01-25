@@ -17,6 +17,7 @@ import com.thislucasme.pdvapplication.R;
 import com.thislucasme.pdvapplication.model.Token;
 import com.thislucasme.pdvapplication.model.User;
 import com.thislucasme.pdvapplication.pdv.PdvActivity;
+import com.thislucasme.pdvapplication.preference.PreferencesManager;
 import com.thislucasme.pdvapplication.viewmodel.UserViewModel;
 
 import java.io.IOException;
@@ -44,8 +45,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Dentro de um método em sua Activity ou Fragment
         User user = new User();
-        user.setEmail("lucassilvaee1245@gmail.com");
-        user.setPassword("123456");
+        user.setEmail("lucas@gmail.com");
+        user.setPassword("050903");
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,6 +76,8 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("token", tokenString);
                         editor.apply();
+                        PreferencesManager preferencesManager = new PreferencesManager(getApplicationContext());
+                        preferencesManager.saverUserToken(tokenString);
                         finish();
                         Intent intent = new Intent(LoginActivity.this, PdvActivity.class);
                         startActivity(intent);
