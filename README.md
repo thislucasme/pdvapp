@@ -20,7 +20,7 @@ Este repositório contém o código-fonte do Sistema de Gestão de Vendas. Abaix
 - [x] Salvar venda como pendente
 - [x] Tela listagem de pedidos pendentes - front-end
 - [x] Retorno na api com paginação de pedidos pententes - back-end
-- [ ] Abrir tela de listagem de produtos de pedido
+- [x] Abrir tela de listagem de produtos de pedido
 - [x] Retorno listagem de produtos do pedido - api back-end
 - [ ] Recuperar pedido para PDV
 - [ ] Atualizar pedido
