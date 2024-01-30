@@ -24,10 +24,10 @@ Este repositório contém o código-fonte do Sistema de Gestão de Vendas. Abaix
 - [x] Retorno listagem de produtos do pedido - api back-end
 - [x] Recuperar pedido para PDV
 - [x] Deletar pedido / produtos - api
-- [ ] Deletar pedido / produtos - front-end
+- [x] Deletar pedido / produtos - front-end
 - [x] Contar pedidos - api
-- [ ] permitir abrir pedidos apenas quando não tiver itens no carrinho
-- [ ] Atualizar pedido
+- [x] permitir abrir pedidos apenas quando não tiver itens no carrinho
+- [x] Atualizar pedido
 
 ## Estoque
 - [ ] Cadastrar produto
